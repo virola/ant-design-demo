@@ -22,6 +22,11 @@ export default {
       // Login successfully
       if (response.status === 'ok') {
         reloadAuthorized();
+        // 在本地存上用户数据
+        localStorage.setItem('userInfo', JSON.stringify(response.data));
+        // 保存登录信息
+        localStorage.setItem('loginName', payload.userName);
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;

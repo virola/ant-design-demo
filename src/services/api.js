@@ -5,6 +5,7 @@ import request from '@/utils/request';
 export async function accountLogin(params) {
   const { userName, password } = params;
   const encrypt = md5(password).toUpperCase();
+  // console.log(password, encrypt);
 
   return request('/api/login', {
     method: 'POST',
@@ -15,4 +16,6 @@ export async function accountLogin(params) {
   });
 }
 
-export async function getHomeStats() {}
+export async function getHomeStats() {
+  // todo
+};

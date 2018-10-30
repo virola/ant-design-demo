@@ -16,6 +16,10 @@ class LoginPage extends Component {
     type: 'account',
   };
 
+  componentDidMount() {
+
+  };
+
   onTabChange = type => {
     this.setState({ type });
   };
@@ -24,7 +28,8 @@ class LoginPage extends Component {
     const { type } = this.state;
     if (!err) {
       const { dispatch } = this.props;
-      console.log(values);
+      localStorage.setItem('password', values.password);
+
       dispatch({
         type: 'login/login',
         payload: {
@@ -42,6 +47,8 @@ class LoginPage extends Component {
   render() {
     const { login, submitting } = this.props;
     const { type } = this.state;
+    const { loginName, password } = window.localStorage;
+
     return (
       <div className={styles.main}>
         <Login
@@ -57,10 +64,11 @@ class LoginPage extends Component {
               login.type === 'account' &&
               !submitting &&
               this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
-            <UserName name="userName" placeholder="用户名/手机号" />
+            <UserName name="userName" placeholder="用户名/手机号" defaultValue={loginName} />
             <Password
               name="password"
               placeholder="密码"
+              defaultValue={password}
               onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
             />
           </Tab>

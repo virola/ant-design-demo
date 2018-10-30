@@ -1,14 +1,14 @@
 import fetch from 'dva/fetch';
-import axios from 'axios';
+// import axios from 'axios';
 import { notification } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
 
-const ajax = axios.create({
-  baseURL: window.AJAX_BASE_URL,
-  timeout: 10000,
-});
+// const ajax = axios.create({
+//   baseURL: window.AJAX_BASE_URL,
+//   timeout: 10000,
+// });
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',

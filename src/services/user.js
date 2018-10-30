@@ -5,5 +5,8 @@ export async function query() {
 }
 
 export async function queryCurrent() {
-  return request('/api/currentUser');
+  const userInfo = JSON.parse(localStorage.userInfo);
+  // console.log(userInfo);
+  return userInfo;
+  // return request('/api/currentUser');
 }
