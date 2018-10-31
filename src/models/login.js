@@ -22,10 +22,13 @@ export default {
       // Login successfully
       if (response.status === 'ok') {
         reloadAuthorized();
-        // 在本地存上用户数据
-        localStorage.setItem('userInfo', JSON.stringify(response.data));
         // 保存登录信息
         localStorage.setItem('loginName', payload.userName);
+
+        // 本地保存token
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();

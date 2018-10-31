@@ -79,6 +79,9 @@ export default function request(url, option) {
   const reqUrl = window.AJAX_BASE_URL + url;
   const options = {
     expirys: isAntdPro(),
+    headers: {
+      'Authorization': localStorage.token || '',
+    },
     ...option,
   };
   /**

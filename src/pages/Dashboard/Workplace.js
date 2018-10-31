@@ -39,10 +39,11 @@ class Workplace extends PureComponent {
             <div className={styles.contentTitle}>
               你好，
               {currentUser.name}
-              ，祝你开心每一天！
+              。
             </div>
+            <div className={styles.contentSubTitle}>欢迎使用壁虎E护·院外延续护理云平台</div>
             <div>
-              {currentUser.jobTitle}
+              {currentUser.jobTitle} | {currentUser.departmentName}
             </div>
           </div>
         </div>

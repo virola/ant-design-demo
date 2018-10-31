@@ -68,7 +68,7 @@ class LoginPage extends Component {
             <Password
               name="password"
               placeholder="密码"
-              defaultValue={password}
+              defaultValue={loginName && password}
               onPressEnter={() => this.loginForm.validateFields(this.handleSubmit)}
             />
           </Tab>
