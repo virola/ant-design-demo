@@ -1,14 +1,17 @@
-import fetch from 'dva/fetch';
-// import axios from 'axios';
+// import fetch from 'dva/fetch';
+// 去掉fetch采用axios实现异步请求
+import axios from 'axios';
+
 import { notification } from 'antd';
 import router from 'umi/router';
 import hash from 'hash.js';
 import { isAntdPro } from './utils';
 
-// const ajax = axios.create({
-//   baseURL: window.AJAX_BASE_URL,
-//   timeout: 10000,
-// });
+// 新建实例
+const ajax = axios.create({
+  baseURL: window.AJAX_BASE_URL,
+  timeout: 10000,
+});
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -28,12 +31,15 @@ const codeMessage = {
   504: '网关超时。',
 };
 
-const checkStatus = response => {
+const checkStatus = async response => {
   if (!response) {
     const error = new Error('请求错误');
-    error.response = response;
+    error.name = 500;
+    error.response = {};
     throw error;
   }
+  // const respData = await response.json();
+  // console.log(response);
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
@@ -49,20 +55,16 @@ const checkStatus = response => {
 };
 
 const cachedSave = (response, hashcode) => {
+
   /**
    * Clone a response data and store it in sessionStorage
    * Does not support data other than json, Cache only json
    */
-  const contentType = response.headers.get('Content-Type');
+  const contentType = response.headers['Content-Type'];
   if (contentType && contentType.match(/application\/json/i)) {
-    // All data is saved as text
-    response
-      .clone()
-      .text()
-      .then(content => {
-        sessionStorage.setItem(hashcode, content);
-        sessionStorage.setItem(`${hashcode}:timestamp`, Date.now());
-      });
+    const content = JSON.stringify(response.data);
+    sessionStorage.setItem(hashcode, content);
+    sessionStorage.setItem(`${hashcode}:timestamp`, Date.now());
   }
   return response;
 };
@@ -79,6 +81,7 @@ export default function request(url, option) {
   const reqUrl = window.AJAX_BASE_URL + url;
   const options = {
     expirys: isAntdPro(),
+    // mode: 'cors',
     headers: {
       'Authorization': localStorage.token || '',
     },
@@ -133,17 +136,17 @@ export default function request(url, option) {
     }
   }
 
-  // 正式请求数据
-  return fetch(reqUrl, newOptions)
+  return ajax(reqUrl, newOptions)
     .then(checkStatus)
     .then(response => cachedSave(response, hashcode))
     .then(response => {
       // DELETE and 204 do not return data by default
       // using .json will report an error.
       if (newOptions.method === 'DELETE' || response.status === 204) {
-        return response.text();
+        return response.data;
       }
-      return response.json();
+
+      return response.data;
     })
     .catch(e => {
       const status = e.name;
@@ -168,4 +171,41 @@ export default function request(url, option) {
         router.push('/exception/404');
       }
     });
+  // // 正式请求数据
+  // return fetch(reqUrl, newOptions)
+  //   .then(checkStatus)
+  //   .then(response => cachedSave(response, hashcode))
+  //   .then(async response => {
+  //     // DELETE and 204 do not return data by default
+  //     // using .json will report an error.
+  //     if (newOptions.method === 'DELETE' || response.status === 204) {
+  //       return response.text();
+  //     }
+  //     const respData = await response.json();
+  //     return respData.data;
+  //     // return response.json();
+  //   })
+  //   .catch(e => {
+  //     const status = e.name;
+  //     if (status === 401) {
+  //       // @HACK
+  //       /* eslint-disable no-underscore-dangle */
+  //       window.g_app._store.dispatch({
+  //         type: 'login/logout',
+  //       });
+  //       return;
+  //     }
+  //     // environment should not be used
+  //     if (status === 403) {
+  //       router.push('/exception/403');
+  //       return;
+  //     }
+  //     if (status <= 504 && status >= 500) {
+  //       router.push('/exception/500');
+  //       return;
+  //     }
+  //     if (status >= 404 && status < 422) {
+  //       router.push('/exception/404');
+  //     }
+  //   });
 }

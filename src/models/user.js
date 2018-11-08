@@ -33,9 +33,14 @@ export default {
       };
     },
     saveCurrentUser(state, action) {
+      const { payload } = action;
+      if (!payload.headImage) {
+        // 设置默认头像
+        payload.headImage = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+      }
       return {
         ...state,
-        currentUser: action.payload || {},
+        currentUser: payload || {},
       };
     },
     changeNotifyCount(state, action) {

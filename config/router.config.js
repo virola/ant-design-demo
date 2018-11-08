@@ -30,9 +30,66 @@ export default [
         ],
       },
       {
+        path: '/total',
+        name: 'total',
+        icon: 'area-chart',
+        routes: [
+          {
+            path: '/total/personal',
+            name: 'doctor',
+            component: './TotalReport/Personal',
+          },
+          {
+            path: '/total/department',
+            name: 'department',
+            component: './TotalReport/Department',
+          },
+          {
+            path: '/total/hospital',
+            name: 'hospital',
+            component: './TotalReport/Hospital',
+          },
+        ],
+      },
+      {
+        path: '/trend',
+        name: 'trend',
+        icon: 'line-chart',
+        routes: [
+          {
+            path: '/trend/personal',
+            name: 'doctor',
+            component: './TrendReport/Personal',
+          },
+          {
+            path: '/trend/department',
+            name: 'department',
+            component: './TrendReport/Department',
+          },
+          {
+            path: '/trend/hospital',
+            name: 'hospital',
+            component: './TrendReport/Hospital',
+          },
+        ],
+      },
+      {
+        path: '/interaction',
+        name: 'interaction',
+        icon: 'team',
+        routes: [
+          {
+            path: '/interaction/chatroom',
+            name: 'chatroom',
+            component: './Interaction/Chatroom',
+          },
+        ],
+      },
+      {
         name: 'result',
         icon: 'check-circle-o',
         path: '/result',
+        hideInMenu: true,
         routes: [
           // result
           {
@@ -47,6 +104,7 @@ export default [
         name: 'exception',
         icon: 'warning',
         path: '/exception',
+        hideInMenu: true,
         routes: [
           // exception
           {
@@ -73,7 +131,7 @@ export default [
         ],
       },
       {
-        component: '404',
+        component: './404',
       },
     ],
   },

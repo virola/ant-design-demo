@@ -1,14 +1,16 @@
 import React, { PureComponent } from 'react';
-// import moment from 'moment';
+import moment from 'moment';
 import { connect } from 'dva';
-import { Row, Col, Card, Avatar } from 'antd';
+import { Row, Col, Card, Avatar, List } from 'antd';
 
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './Workplace.less';
 
-@connect(({ user, loading }) => ({
+@connect(({ user, department, loading }) => ({
   currentUser: user.currentUser,
+  department,
+  departmentLoading: loading.effects['department/fetch'],
   currentUserLoading: loading.effects['user/fetchCurrent'],
 }))
 class Workplace extends PureComponent {
@@ -17,16 +19,40 @@ class Workplace extends PureComponent {
     dispatch({
       type: 'user/fetchCurrent',
     });
+
+    dispatch({
+      type: 'department/fetch',
+    });
   }
 
   componentWillUnmount() {
     // const { dispatch } = this.props;
   }
 
+  renderDepartments() {
+    const { department: { list }, currentUser } = this.props;
+    return list.map(item => (
+      <List.Item key={item.projectId}>
+        <List.Item.Meta
+          title={
+            <div className={item.projectId === currentUser.projectId ? styles.active : ''}>
+              <span className={styles.name}>{item.name}</span>
+              <span className={styles.datetime} title={item.createdTime}>
+                加入日期：{moment(item.createdTime).format('YYYY-MM-DD')}
+              </span>
+            </div>
+          }
+        />
+      </List.Item>
+    ));
+  }
+
   render() {
     const {
       currentUser,
       currentUserLoading,
+      departmentLoading,
+      department: { list },
     } = this.props;
 
     const pageHeaderContent =
@@ -43,72 +69,32 @@ class Workplace extends PureComponent {
             </div>
             <div className={styles.contentSubTitle}>欢迎使用壁虎E护·院外延续护理云平台</div>
             <div>
-              {currentUser.jobTitle} | {currentUser.departmentName}
+              {currentUser.jobTitle || '职称未填写'}&nbsp;&nbsp;|&nbsp;&nbsp;{currentUser.departmentName}
             </div>
           </div>
         </div>
       ) : null;
 
-    const extraContent = (
-      <div className={styles.extraContent}>
-        <div className={styles.statItem}>
-          <p>患者数</p>
-          <p>56</p>
-        </div>
-        <div className={styles.statItem}>
-          <p>团队内排名</p>
-          <p>
-            8<span> / 24</span>
-          </p>
-        </div>
-        <div className={styles.statItem}>
-          <p>宣教发送</p>
-          <p>2,223</p>
-        </div>
-      </div>
-    );
 
     return (
       <PageHeaderWrapper
         loading={currentUserLoading}
         content={pageHeaderContent}
-        extraContent={extraContent}
       >
-        <Row gutter={24}>
-          <Col xl={6} lg={12} md={12} sm={24} xs={24}>
-            <Card style={{ marginBottom: 24 }}>
-              <strong>147</strong>
-              家合作医院
-            </Card>
-          </Col>
-          <Col xl={6} lg={12} md={12} sm={24} xs={24}>
-            <Card style={{ marginBottom: 24 }}>
-              <strong>147</strong>
-              家合作医院
-            </Card>
-          </Col>
-          <Col xl={6} lg={12} md={12} sm={24} xs={24}>
-            <Card style={{ marginBottom: 24 }}>
-              <strong>147</strong>
-              家合作医院
-            </Card>
-          </Col>
-          <Col xl={6} lg={12} md={12} sm={24} xs={24}>
-            <Card style={{ marginBottom: 24 }}>
-              <strong>147</strong>
-              家合作医院
-            </Card>
-          </Col>
-        </Row>
         <Row gutter={24}>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>
             <Card
-              style={{ marginBottom: 24 }}
+              bodyStyle={{ padding: 0 }}
               bordered={false}
-              title="XX 指数"
-              loading={false}
+              className={styles.activeCard}
+              title={
+                <span>全院科室（{list.length}）</span>
+              }
+              loading={departmentLoading}
             >
-              <div className={styles.chart}>图表占位</div>
+              <List loading={departmentLoading} size="large">
+                <div className={styles.projectList}>{this.renderDepartments()}</div>
+              </List>
             </Card>
           </Col>
         </Row>

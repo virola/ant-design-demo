@@ -15,7 +15,9 @@
   display: flex;
   .avatar {
     flex: 0 1 72px;
-    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+
     & > span {
       border-radius: 72px;
       display: block;
@@ -41,6 +43,7 @@
       font-size: 20px;
       line-height: 28px;
       color: @text-color-secondary;
+      margin-bottom: 12px;
     }
   }
 }
@@ -108,59 +111,26 @@
 }
 
 .projectList {
-  :global {
-    .ant-card-meta-description {
-      color: @text-color-secondary;
-      height: 44px;
-      line-height: 22px;
-      overflow: hidden;
-    }
+  padding: 0 30px;
+
+  .name {
+    color: @text-color;
   }
-  .cardTitle {
-    font-size: 0;
-    a {
-      color: @heading-color;
-      margin-left: 12px;
-      line-height: 24px;
-      height: 24px;
-      display: inline-block;
-      vertical-align: top;
-      font-size: @font-size-base;
-      &:hover {
-        color: @primary-color;
-      }
-    }
+  .datetime {
+    color: @text-color-secondary;
+    flex: 0 0 auto;
+    float: right;
   }
-  .projectGrid {
-    width: 33.33%;
-  }
-  .projectItemContent {
-    display: flex;
-    margin-top: 8px;
-    overflow: hidden;
-    font-size: 12px;
-    height: 20px;
-    line-height: 20px;
-    .textOverflow();
-    a {
-      color: @text-color-secondary;
-      display: inline-block;
-      flex: 1 1 0;
-      .textOverflow();
-      &:hover {
-        color: @primary-color;
-      }
-    }
-    .datetime {
-      color: @disabled-color;
-      flex: 0 0 auto;
-      float: right;
+  .active {
+    .name {
+      font-weight: 600;
+      color: @primary-color;
     }
   }
 }
 
 .datetime {
-  color: @disabled-color;
+  color: @text-color-secondary;
 }
 
 @media screen and (max-width: @screen-xl) and (min-width: @screen-lg) {

@@ -16,6 +16,12 @@ export async function accountLogin(params) {
   });
 }
 
-export async function getHomeStats() {
-  // todo
-};
+// 根据登录账户获取所有科室列表
+export async function getDepartments() {
+  return request('/api/getDepartments');
+}
+
+// 图表数据
+export async function fakeChartData() {
+  return request('/api/todo');
+}

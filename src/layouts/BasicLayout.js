@@ -11,13 +11,11 @@ import { enquireScreen, unenquireScreen } from 'enquire-js';
 import { formatMessage } from 'umi/locale';
 import SiderMenu from '@/components/SiderMenu';
 import Authorized from '@/utils/Authorized';
-// import logo from '../assets/logo.svg';
+import logo from '../assets/logo.svg';
 import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
-
-const logo = 'http://img.bihuyihu.com/index_loading.svg';
 
 const { Content } = Layout;
 
@@ -179,13 +177,13 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname);
 
     if (!currRouterData) {
-      return '格尔智慧';
+      return '壁虎E护·院外延续护理云平台';
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
       defaultMessage: currRouterData.name,
     });
-    return `${message} - 格尔智慧`;
+    return `${message} - 壁虎E护·院外延续护理云平台`;
   };
 
   getLayoutStyle = () => {
