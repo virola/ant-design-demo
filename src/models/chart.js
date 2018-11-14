@@ -3,7 +3,7 @@ import { fakeChartData } from '@/services/api';
 const fakeData = [];
 for (let index = 0; index < 7; index++) {
   fakeData[index] = {
-    x: `test-${index}`,
+    x: `10-1${index}`,
     y: Math.round(Math.random() * 1000),
     title: `老师-${index}`,
     total: Math.round(Math.random() * 1000),

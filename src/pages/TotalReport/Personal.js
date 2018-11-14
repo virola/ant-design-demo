@@ -7,10 +7,7 @@ import {
   Icon,
   Card,
   Tabs,
-  DatePicker,
   Tooltip,
-  // Menu,
-  // Dropdown,
 } from 'antd';
 import {
   ChartCard,
@@ -20,6 +17,7 @@ import {
   Pie,
 } from '@/components/Charts';
 import Trend from '@/components/Trend';
+import DateRangePicker from '@/components/DateRangePicker';
 import numeral from 'numeral';
 import { getTimeDistance } from '@/utils/utils';
 
@@ -28,7 +26,6 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './Personal.less';
 
 const { TabPane } = Tabs;
-const { RangePicker } = DatePicker;
 
 @connect(({ chart, loading }) => ({
   chart,
@@ -38,6 +35,7 @@ class Personal extends Component {
 
   state = {
     rangePickerValue: getTimeDistance('yesterday'),
+    dateRangeChat: getTimeDistance('yesterday'),
     loading: true,
   };
 
@@ -64,34 +62,27 @@ class Personal extends Component {
     clearTimeout(this.timeoutId);
   }
 
-  selectDate = type => {
+  handleRangePickerChange = rangePickerValue => {
     // const { dispatch } = this.props;
     this.setState({
-      rangePickerValue: getTimeDistance(type),
+      rangePickerValue,
     });
+    // console.log(rangePickerValue);
 
     // dispatch({
     //   type: 'chart/fetchSalesData',
     // });
   };
 
-  isActive(type) {
-    const { rangePickerValue } = this.state;
-    const value = getTimeDistance(type);
-    if (!rangePickerValue[0] || !rangePickerValue[1]) {
-      return '';
-    }
-    if (
-      rangePickerValue[0].isSame(value[0], 'day') &&
-      rangePickerValue[1].isSame(value[1], 'day')
-    ) {
-      return styles.currentDate;
-    }
-    return '';
-  }
+  handleChatDateChange = dateRangeChat => {
+    this.setState({
+      dateRangeChat,
+    });
+    // console.log(dateRangeChat);
+  };
 
   render() {
-    const { rangePickerValue, loading: propsLoding } = this.state;
+    const { rangePickerValue, dateRangeChat, loading: propsLoding } = this.state;
     const { chart, loading: stateLoading } = this.props;
     const {
       patientData,
@@ -100,30 +91,6 @@ class Personal extends Component {
       msgChartData,
     } = chart;
     const loading = propsLoding || stateLoading;
-
-    const salesExtra = (
-      <div className={styles.salesExtraWrap}>
-        <div className={styles.salesExtra}>
-          <a className={this.isActive('yesterday')} onClick={() => this.selectDate('yesterday')}>
-            <span>昨天</span>
-          </a>
-          <a className={this.isActive('week')} onClick={() => this.selectDate('week')}>
-            <FormattedMessage id="app.analysis.all-week" defaultMessage="All Week" />
-          </a>
-          <a className={this.isActive('month')} onClick={() => this.selectDate('month')}>
-            <FormattedMessage id="app.analysis.all-month" defaultMessage="All Month" />
-          </a>
-          <a className={this.isActive('year')} onClick={() => this.selectDate('year')}>
-            <FormattedMessage id="app.analysis.all-year" defaultMessage="All Year" />
-          </a>
-        </div>
-        <RangePicker
-          value={rangePickerValue}
-          onChange={this.handleRangePickerChange}
-          style={{ width: 256 }}
-        />
-      </div>
-    );
 
     const topColResponsiveProps = {
       xs: 24,
@@ -134,8 +101,10 @@ class Personal extends Component {
       style: { marginBottom: 24 },
     };
 
+    const pieColors = [ '#988afc', '#73a5fb', '#fa6a69' ];
+
     const toolTip = (
-      <span>截止统计时间：今天 00:00</span>
+      <span>截止统计时间： 今天 00:00</span>
     );
 
     return (
@@ -275,7 +244,16 @@ class Personal extends Component {
 
         <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.salesCard}>
-            <Tabs tabBarExtraContent={salesExtra} size="large" tabBarStyle={{ marginBottom: 24 }}>
+            <Tabs
+              tabBarExtraContent={
+                <DateRangePicker
+                  value={rangePickerValue}
+                  onChange={this.handleRangePickerChange}
+                />
+              }
+              size="large"
+              tabBarStyle={{ marginBottom: 24 }}
+            >
               <TabPane
                 tab={<span>新增患者</span>}
                 key="patient"
@@ -363,12 +341,18 @@ class Personal extends Component {
         </Card>
 
         <Row gutter={24}>
-          <Col xl={16} lg={12} md={12} sm={24} xs={24}>
+          <Col xl={16} lg={12} md={24} sm={24} xs={24}>
             <Card
               style={{ marginTop: 24 }}
               bordered={false}
               title={
                 <span>医患互动</span>
+              }
+              extra={
+                <DateRangePicker
+                  value={dateRangeChat}
+                  onChange={this.handleChatDateChange}
+                />
               }
             >
               <div style={{ padding: '0 24px' }}>
@@ -383,7 +367,7 @@ class Personal extends Component {
               </div>
             </Card>
           </Col>
-          <Col xl={8} lg={12} md={12} sm={24} xs={24}>
+          <Col xl={8} lg={12} md={24} sm={24} xs={24}>
             <Card
               style={{ marginTop: 24, minHeight: 534 }}
               bordered={false}
@@ -397,6 +381,7 @@ class Personal extends Component {
                 total={() => <span>{genderPieData.reduce((pre, now) => now.y + pre, 0)}</span>}
                 data={genderPieData}
                 valueFormat={value => <span>{numeral(value).format('0,0')}</span>}
+                colors={pieColors}
                 height={400}
                 lineWidth={4}
               />
