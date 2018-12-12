@@ -85,6 +85,11 @@ export default {
   'menu.trend.department': '全科室数据',
   'menu.trend.hospital': '全院数据',
 
+  'menu.report': '统计分析',
+  'menu.report.patient': '患者分析',
+  'menu.report.education': '宣教分析',
+  'menu.report.msg': '消息分析',
+
   'menu.form': '表单页',
   'menu.form.basicform': '基础表单',
   'menu.form.stepform': '分步表单',
